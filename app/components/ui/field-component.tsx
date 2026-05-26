@@ -4,6 +4,9 @@ interface FieldProps {
     name?: string;
     className?: string;
     children?: React.ReactNode;
+    value?: string | number;
+    defaultValue?: string | number;
+    onChange?: (value: any) => void;
 };
 
 interface InputFieldProps extends FieldProps {
@@ -22,6 +25,9 @@ export const InputField = (props: InputFieldProps) => {
                 type={props.type}
                 placeholder={props.placeholder}
                 className={`input-field-general ${props.className}`}
+                defaultValue={props.defaultValue}
+                value={props.value}
+                onChange={(e) => props.onChange?.(e.currentTarget.value)}
             />
         </label>
     );

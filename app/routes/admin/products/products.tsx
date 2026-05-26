@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import Button from "~/components/ui/button-component";
 import { InputField, SelectField, TextArea } from "~/components/ui/field-component";
 import Modal from "~/components/ui/modal";
@@ -9,6 +9,7 @@ import { ProductTableHeaders, type ProductTableItemProps } from "./product.value
 const Products = () => {
 
     const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <div className="space-y-5">
@@ -16,7 +17,7 @@ const Products = () => {
                 <p className="text-2xl font-semibold">Products</p>
                 <Button.Submit
                     className="px-4 py-2"
-                    onClick={() => setIsAddProductOpen(true)}
+                    onClick={() => navigate('/admin/products/add')}
                 >
                     + Add Product
                 </Button.Submit>

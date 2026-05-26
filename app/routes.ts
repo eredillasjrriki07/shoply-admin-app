@@ -7,6 +7,7 @@ export default [
         layout("components/layout/mainlayout.tsx", [
             index("routes/admin/_index.tsx"),
             route("products", "routes/admin/products/products.tsx"),
+            route("products/add", "routes/admin/products/add-product.tsx"),
             route("products/:id", "routes/admin/products/product-details.tsx"),
             route("orders", "routes/admin/orders/orders.tsx"),
             route("orders/:id", "routes/admin/orders/order-details.tsx"),

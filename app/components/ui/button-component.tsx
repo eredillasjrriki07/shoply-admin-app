@@ -7,7 +7,7 @@ interface ButtonProps {
 const Button = (props: ButtonProps) => {
     return (
         <button
-            className={`bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-100 ${props.className}`}
+            className={`border border-gray-300 rounded-md cursor-pointer hover:bg-gray-100 ${props.className}`}
             onClick={props.onClick}
         >
             {props.children}
