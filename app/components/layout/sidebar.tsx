@@ -1,4 +1,5 @@
 import { NavLink, Link } from "react-router";
+import { useAuth } from "~/hooks/useAuth";
 
 type NavItem = { to: string; label: string };
 
@@ -11,6 +12,12 @@ const navItems: NavItem[] = [
 ];
 
 const Sidebar = () => {
+    const { user, logout } = useAuth();
+
+    const handleLogout = async () => {
+        await logout();
+    };
+
     return (
         <aside className="flex h-screen w-60 flex-col border-r border-gray-200 bg-white">
             <div className="px-6 py-5">
@@ -43,8 +50,8 @@ const Sidebar = () => {
             </nav>
             <div className="border-t border-gray-200 p-4">
                 <div className="mb-3">
-                    <p className="text-sm font-semibold text-gray-900">Admin</p>
-                    <p className="text-xs text-gray-500">admin@shoply.com</p>
+                    <p className="text-sm font-semibold text-gray-900">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
                 <div className="space-y-2">
                     <a
@@ -57,10 +64,8 @@ const Sidebar = () => {
                     </a>
                     <button
                         type="button"
-                        onClick={() => {
-                            /* call your sign-out action here */
-                        }}
-                        className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                        onClick={handleLogout}
+                        className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
                     >
                         Sign out
                     </button>

@@ -1,7 +1,8 @@
+import { useAuth } from "~/hooks/useAuth";
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import { Navigate } from "react-router";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
     { name: "description", content: "Welcome to React Router!" },
@@ -9,5 +10,9 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <Welcome />;
+  const { user, loading } = useAuth();
+
+  if (loading) return <div className="grid h-screen place-items-center">Loading…</div>;
+
+  return <Navigate to={user ? '/admin' : '/auth/login'} />;
 }
