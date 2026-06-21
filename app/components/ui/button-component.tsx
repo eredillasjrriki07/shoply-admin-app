@@ -2,6 +2,7 @@ interface ButtonProps {
     onClick?: () => void;
     className?: string;
     children?: React.ReactNode;
+    disabled?: boolean;
 };
 
 const Button = (props: ButtonProps) => {
@@ -20,6 +21,7 @@ const SubmitButton = (props: ButtonProps) => {
         <button
             className={`bg-blue-600 text-white font-semibold rounded-lg cursor-pointer hover:bg-blue-700 ${props.className}`}
             onClick={props.onClick}
+            disabled={props.disabled}
         >
             {props.children}
         </button>
