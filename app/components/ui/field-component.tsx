@@ -51,6 +51,8 @@ export const SelectField = (props: FieldProps) => {
                 name={props.name}
                 id={props.id}
                 className={`border border-gray-200 w-full p-2 rounded-md ${props.className}`}
+                value={props.value}
+                onChange={(e) => props.onChange?.(e.currentTarget.value)}
             >
                 {props.children}
             </select>
