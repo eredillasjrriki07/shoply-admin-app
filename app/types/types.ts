@@ -1,10 +1,8 @@
-export type User = {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    isActive: boolean;
+import type { User } from "~/routes/auth/types";
+
+export interface PaginatedResponse {
+    page: number;
+    count: number;
 };
 
 export type ApiResponse<T> = {

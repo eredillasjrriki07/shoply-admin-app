@@ -2,8 +2,10 @@ export interface ProductTableItemProps {
     name: string;
     category: string;
     price: number;
+    oldPrice: number;
     stock: number;
     rating: number;
+    border: string;
 };
 
 export const ProductTableHeaders = [

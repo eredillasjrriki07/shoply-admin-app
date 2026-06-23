@@ -22,7 +22,7 @@ const TableHeader = ({ className, children }: TableProps) => {
 
 const TableBody = ({ className, children }: TableProps) => {
     return (
-        <div className={`grid bg-white p-3 ${className}`}>
+        <div className={`grid bg-white ${className}`}>
             {children}
         </div>
     );
