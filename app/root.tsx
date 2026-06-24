@@ -12,6 +12,7 @@ import "./app.css";
 import { AuthProvider } from "./lib/auth-context";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import { ToastContainer } from "react-toastify";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -37,6 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <ToastContainer />
         <ScrollRestoration />
         <Scripts />
       </body>

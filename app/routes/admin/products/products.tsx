@@ -122,7 +122,7 @@ const Products = () => {
                 <Table.Body className="grid-cols-12">
                     {products.map((product, index) =>
                         <ProductTableItem
-                            key={product.id}
+                            key={product.productId}
                             name={product.name}
                             category={product.category}
                             price={product.price}
@@ -177,7 +177,7 @@ const ProductTableItem = (props: ProductTableItemProps) => {
             <span className={`col-span-2 ${props.border} p-3`}>{props.category}</span>
             <span className={`col-span-2 ${props.border} p-3`}>
                 ₱{props.price.toFixed(2)}&nbsp;
-                {props.oldPrice > 0 && <span className="text-sm line-through text-gray-500">₱30.00</span>}
+                {props.oldPrice > 0 && <span className="text-sm line-through text-gray-500">₱{props.oldPrice.toFixed(2)}</span>}
             </span>
             <span className={`col-span-2 ${props.border} p-3`}>{props.stock}</span>
             <span className={`col-span-2 ${props.border} p-3`}>{props.rating.toFixed(2)}</span>
