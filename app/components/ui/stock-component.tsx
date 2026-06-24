@@ -25,13 +25,14 @@ export const StockCountDefault = ({ units, onUnitsChange }: StockCountDefaultPro
 
 interface StockListViewProps extends StockViewProps {
     variants: Array<string>;
+    stocks: Record<string, number>;
+    onStocksChange: (value: React.SetStateAction<Record<string, number>>) => void;
 };
 
-export const StockListView = ({ variants, onUnitsChange }: StockListViewProps) => {
-    const [stocks, setStocks] = useState<Record<string, number>>({});
+export const StockListView = ({ variants, onUnitsChange, stocks, onStocksChange }: StockListViewProps) => {
 
     useEffect(() => {
-        setStocks((prev) => Object.fromEntries(variants.map((v) => [v, prev[v] ?? 0])));
+        onStocksChange((prev) => Object.fromEntries(variants.map((v) => [v, prev[v] ?? 0])));
     }, [variants]);
 
     useEffect(() => {
@@ -52,7 +53,7 @@ export const StockListView = ({ variants, onUnitsChange }: StockListViewProps) =
                         className="bg-white text-end px-1"
                         value={value}
                         onChange={(v) => {
-                            setStocks((prev) => ({ ...prev, [variant]: Number(v) }));
+                            onStocksChange((prev) => ({ ...prev, [variant]: Number(v) }));
                         }
                         }
                     />
@@ -65,13 +66,14 @@ export const StockListView = ({ variants, onUnitsChange }: StockListViewProps) =
 interface StockGridViewProps extends StockViewProps {
     sizes: Array<string>;
     colors: Array<string>;
+    stocks: Record<string, Record<string, number>>;
+    onStocksChange: (value: React.SetStateAction<Record<string, Record<string, number>>>) => void;
 };
 
-export const StockGridView = ({ sizes, colors, onUnitsChange }: StockGridViewProps) => {
-    const [stocks, setStocks] = useState<Record<string, Record<string, number>>>({});
+export const StockGridView = ({ sizes, colors, onUnitsChange, stocks, onStocksChange }: StockGridViewProps) => {
 
     useEffect(() => {
-        setStocks((prev) => Object.fromEntries(colors.map((color) => [color, Object.fromEntries(sizes.map((size) => [size, prev[color]?.[size] ?? 0]))])));
+        onStocksChange((prev) => Object.fromEntries(colors.map((color) => [color, Object.fromEntries(sizes.map((size) => [size, prev[color]?.[size] ?? 0]))])));
     }, [sizes, colors]);
 
     useEffect(() => {
@@ -99,7 +101,7 @@ export const StockGridView = ({ sizes, colors, onUnitsChange }: StockGridViewPro
                                 className="bg-white w-14"
                                 value={stockCount}
                                 onChange={(v) => {
-                                    setStocks((prev) => ({
+                                    onStocksChange((prev) => ({
                                         ...prev,
                                         [stockColor]: { ...prev[stockColor], [stockSize]: Number(v) }
                                     }));

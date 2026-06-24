@@ -6,6 +6,7 @@ interface FieldProps {
     children?: React.ReactNode;
     value?: string | number;
     defaultValue?: string | number;
+    required?: boolean;
     onChange?: (value: any) => void;
 };
 
@@ -26,6 +27,7 @@ export const InputField = (props: InputFieldProps) => {
                 placeholder={props.placeholder}
                 className={`input-field-general ${props.className}`}
                 defaultValue={props.defaultValue}
+                required={props.required}
                 value={props.value}
                 onChange={(e) => props.onChange?.(e.currentTarget.value)}
             />
@@ -38,6 +40,9 @@ export const TextArea = (props: TextAreaProps) => {
         <label className="block text-sm text-gray-600">{props.label}
             <textarea
                 className={`input-field-general ${props.className}`}
+                required={props.required}
+                value={props.value}
+                onChange={(e) => props.onChange?.(e.currentTarget.value)}
             />
         </label>
     );

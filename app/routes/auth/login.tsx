@@ -1,5 +1,6 @@
+import { AxiosError } from "axios";
 import { useEffect, useState, type FormEvent } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import Button from "~/components/ui/button-component";
 import Card from "~/components/ui/card-component";
 import { InputField } from "~/components/ui/field-component";
@@ -31,7 +32,11 @@ const Login = () => {
             await login(email, password);
             navigate(from, { replace: true });
         } catch (error) {
-            setError('Invalid username or password!');
+            if (error instanceof AxiosError) {
+                setError(error.response?.data.message);
+            } else {
+                setError('Unknow error has occured.');
+            }
         } finally {
             setSubmitting(false);
         }

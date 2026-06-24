@@ -6,19 +6,42 @@ export interface InventoryStats {
     lowStock: number;
     outOfStock: number;
 };
-
 export interface Product {
-    id: string;
+    productId: string;
+    name: string;
+    imageUrl: string;
+    category: string;
+    price: number;
+    oldPrice: number;
+    isActive: boolean;
+    totalStock: number;
+    rating: number;
+};
+
+interface ProductSize {
+    value: string;
+};
+interface ProductColor {
+    value: string;
+};
+
+export interface ProductVariant {
+    sku: string;
+    size?: string;
+    color?: string;
+    stocks: number;
+};
+export interface CreateProduct {
     name: string;
     category: string;
     price: number;
     oldPrice: number;
     imageUrl: string;
+    description: string;
     isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    totalStock: number;
-    rating: number;
+    sizes?: ProductSize[];
+    colors?: ProductColor[];
+    variants?: ProductVariant[];
 };
 
 export interface ProductListResponse extends PaginatedResponse {
