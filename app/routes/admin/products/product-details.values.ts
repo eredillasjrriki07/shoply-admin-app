@@ -9,6 +9,7 @@ export interface ReviewItemProps {
 
 export interface ProductDetailsProps {
     product: Product | null;
+    setIsViewing?: (value: boolean) => void;
 }
 
 export interface RatingBarProps {
