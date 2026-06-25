@@ -54,11 +54,13 @@ export interface CreateProduct {
     oldPrice: number;
     imageUrl: string;
     description: string;
-    isActive: boolean;
+    isActive?: boolean;
     sizes?: ProductSize[];
     colors?: ProductColor[];
     variants?: ProductVariant[];
 };
+
+export interface UpdateProduct extends Partial<CreateProduct> { }
 
 export interface ProductListResponse extends PaginatedResponse {
     products: Product[],
@@ -66,6 +68,7 @@ export interface ProductListResponse extends PaginatedResponse {
 
 export interface ProductState {
     selectedProduct: Product | null;
+    loading: boolean;
 };
 
 export interface ProductsViewState {
@@ -89,7 +92,7 @@ export interface Review extends BaseEntity {
     user: User;
 }
 
-export interface ReviewList extends PaginatedResponse { 
+export interface ReviewList extends PaginatedResponse {
     reviews: Review[];
 }
 

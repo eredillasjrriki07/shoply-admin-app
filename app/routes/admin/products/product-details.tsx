@@ -6,18 +6,19 @@ import type { ProductDetailsProps, RatingBarProps, ReviewItemProps } from "./pro
 import { Link, useParams } from "react-router";
 import { api } from "~/lib/api";
 import { useDispatch } from "react-redux";
-import { setSelectedProduct } from "./slice/productSlice";
+import { setLoading, setSelectedProduct, updateSelectedProduct } from "./slice/productSlice";
 import { useAppSelector } from "~/store";
-import type { ReviewSummary, Product, Review, ReviewList } from "./types";
-import { all, AxiosError } from "axios";
-import { errorToast } from "~/lib/util/shoply-toast";
+import type { ReviewSummary, ReviewList } from "./types";
+import { AxiosError } from "axios";
+import { errorToast, successToast } from "~/lib/util/shoply-toast";
 import { formatDate, getSalePercentage, getStars } from "~/lib/helpers/helpers";
-import { PAGE_LIMIT } from "~/lib/constants/constants";
+import { PAGE_LIMIT, productCategories } from "~/lib/constants/constants";
+import { PageComponent } from "~/components/ui/page-component";
 
 const ProductDetails = () => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [isViewing, setIsViewing] = useState(false);
     const product = useAppSelector((state) => state.product.selectedProduct);
+    const loading = useAppSelector((state) => state.product.loading);
     const dispatch = useDispatch();
     const [reviewSummary, setReviewSummary] = useState<ReviewSummary>();
     const [reviewList, setReviewList] = useState<ReviewList>();
@@ -32,6 +33,7 @@ const ProductDetails = () => {
     useEffect(() => {
         async function getProductDetailsAndReviews() {
             try {
+                dispatch(setLoading(true));
 
                 const product = await api.get(`/products/${id}`);
 
@@ -50,7 +52,7 @@ const ProductDetails = () => {
                 }
 
             } finally {
-                setLoading(false);
+                dispatch(setLoading(false));
             }
         }
 
@@ -94,17 +96,20 @@ const ProductDetails = () => {
                         <Button className="px-4 py-2">
                             View on store
                         </Button>
-                        <Button.Submit
-                            className="px-4 py-2"
-                            onClick={() => setIsEditing(!isEditing)}
-                        >
-                            {isEditing ? 'Save Changes' : 'Edit'}
-                        </Button.Submit>
+                        {!isViewing &&
+                            <Button.Submit
+                                className="px-4 py-2"
+                                onClick={() => setIsViewing(!isViewing)}
+                            >
+                                Edit
+                            </Button.Submit>
+                        }
+
                     </div>
                 </div >
                 <div className="flex gap-4">
                     <Card className="flex-1">
-                        {isEditing ? <EditProductForm /> : <ProductDetailsForm product={product} />}
+                        {isViewing ? <EditProductForm product={product!} setIsViewing={setIsViewing} /> : <ProductDetailsForm product={product} />}
                     </Card>
                     <Card className="flex-1">
                         <Card.Header>
@@ -172,30 +177,7 @@ const ProductDetails = () => {
                         )}
                     </Card.Body>
                 </Card>
-                <Card className="p-3">
-                    <div className="flex justify-between items-center">
-                        <p className="text-sm text-gray-500">
-                            {`Showing ${(page - 1) * PAGE_LIMIT + 1}–${Math.min(page * PAGE_LIMIT, reviewCount)} of ${reviewCount}`}
-                        </p>
-                        <div className="flex items-center gap-x-5 text-sm">
-                            <Button
-                                className="px-2 py-1"
-                                disabled={page === 1}
-                                onClick={() => setPage(page - 1)}
-                            >
-                                ← Prev
-                            </Button>
-                            <p className="font-semibold">Page {page} of {maxPage}</p>
-                            <Button
-                                className="px-2 py-1"
-                                disabled={page === maxPage}
-                                onClick={() => setPage(page + 1)}
-                            >
-                                Next →
-                            </Button>
-                        </div>
-                    </div>
-                </Card>
+                <PageComponent count={reviewCount} page={page} setPage={setPage} />
             </div >
         );
 };
@@ -306,49 +288,145 @@ const StockStatusComponent = ({ units }: { units: number }) => {
     );
 };
 
+const EditProductForm = ({ product, setIsViewing }: ProductDetailsProps) => {
 
+    const [name, setName] = useState<string>(product?.name!);
+    const [category, setCategory] = useState<string>(product?.category!);
+    const [image, setImage] = useState<string>(product?.imageUrl!);
+    const [description, setDescription] = useState<string>(product?.description!);
+    const [price, setPrice] = useState<number>(product?.price!);
+    const [oldPrice, setOldPrice] = useState<number>(product?.oldPrice!);
+    const [active, setActive] = useState<boolean>(product?.isActive!);
+    const dispatch = useDispatch();
+    const loading = useAppSelector((state) => state.product.loading);
 
+    async function handleSaveChanges() {
+        try {
 
+            dispatch(setLoading(true));
 
-const EditProductForm = () => {
+            const productUpdate = {
+                name,
+                category,
+                imageUrl: image,
+                description,
+                price,
+                oldPrice,
+                isActive: active,
+            };
+
+            const response = await api.patch(`/products/update/${product?.id}`, productUpdate);
+
+            dispatch(updateSelectedProduct(response.data.data));
+
+            setIsViewing?.(false);
+
+            successToast('Updated product successfully!');
+        } catch (error) {
+
+            if (error instanceof AxiosError) {
+                errorToast(error.response?.data.message)
+            } else if (error instanceof Error) {
+                errorToast(error.message);
+            }
+
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }
+
     return (
         <>
-            <form>
-                <Card.Header>
-                    <span className="font-semibold">Edit</span>
-                </Card.Header>
-                <Card.Body className="space-y-4">
-                    <InputField label="Name" />
-                    <div className="grid grid-cols-2 gap-3 mb-2">
-                        <SelectField label="Category" id="shippingMethod" name="shippingMethod">
-                            <option value="1">Apparel</option>
-                            <option value="2">Home</option>
-                            <option value="3">Tech</option>
-                        </SelectField>
-                        <InputField label="Stock" type="number" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 mb-2">
-                        <InputField label="Price" type="number" />
-                        <InputField label="Old Price" type="number" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                        <InputField label="Sizes (comma separated)" placeholder="S, M, L" />
-                        <div>
-                            <InputField label="Colors (comma separated)" placeholder="Black, White" />
-                            <div className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    placeholder="Black, White"
-                                    className="mr-1"
-
-                                />
-                                <span className="text-sm text-gray-500">Inactive</span>
-                            </div>
+            <Card.Header>
+                <span className="font-semibold">Edit</span>
+            </Card.Header>
+            <Card.Body className="space-y-4">
+                <InputField
+                    label="Name"
+                    value={name}
+                    onChange={setName}
+                />
+                <div className="grid grid-cols-2 gap-3 mb-2">
+                    <SelectField
+                        label="Category"
+                        id="category"
+                        name="category"
+                        className="bg-white text-sm"
+                        value={category}
+                        onChange={setCategory}
+                    >
+                        {productCategories.map((category) => <option key={category} value={category}>{category}</option>)}
+                    </SelectField>
+                    <InputField
+                        label="Image"
+                        type="text"
+                        value={image}
+                        onChange={setImage}
+                    />
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-2">
+                    <InputField
+                        label="Price"
+                        type="number"
+                        value={price}
+                        onChange={setPrice}
+                    />
+                    <InputField
+                        label="Old Price"
+                        type="number"
+                        value={oldPrice}
+                        onChange={setOldPrice}
+                    />
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                    {product?.sizes.length ? (
+                        <InputField
+                            label="Sizes (comma separated)"
+                            readonly={true}
+                            value={product?.sizes.map(size => size.value).join(',')}
+                        />
+                    ) : null}
+                    <div>
+                        {product?.colors.length ? (
+                            <InputField
+                                label="Colors (comma separated)"
+                                readonly={true}
+                                value={product?.colors.map(color => color.value).join(', ')}
+                            />
+                        ) : null}
+                        <div className="flex items-center">
+                            <input
+                                type="checkbox"
+                                className="mr-1"
+                                checked={!active} // Negation since the label is 'Inactive'
+                                onChange={() => setActive(!active)}
+                            />
+                            <span className="text-sm text-gray-500">Inactive</span>
                         </div>
                     </div>
-                    <TextArea label="Description" className="mb-2"></TextArea>
-                </Card.Body>
-            </form>
+                </div>
+                <TextArea
+                    label="Description"
+                    value={description}
+                    onChange={setDescription}
+                />
+                <div className="flex items-center justify-end gap-x-4 text-sm">
+                    <Button
+                        className="px-2 py-1"
+                        onClick={() => setIsViewing?.(false)}
+                        disabled={loading}
+                    >
+                        Cancel
+                    </Button>
+                    <Button.Submit
+                        className="px-2 py-1"
+                        onClick={handleSaveChanges}
+                        disabled={loading}
+                    >
+                        {loading ? 'Saving...' : 'Apply'}
+                    </Button.Submit>
+                </div>
+            </Card.Body>
         </>
     );
 };

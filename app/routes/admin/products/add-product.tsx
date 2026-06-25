@@ -49,7 +49,6 @@ const AddProduct = () => {
                 oldPrice,
                 imageUrl: "/img/sample-img.jpg",
                 description,
-                isActive: true,
                 sizes: sizes.map(size => ({ value: size })),
                 colors: colors.map(color => ({ value: color })),
             };

@@ -7,6 +7,7 @@ interface FieldProps {
     value?: string | number;
     defaultValue?: string | number;
     required?: boolean;
+    readonly?: boolean;
     onChange?: (value: any) => void;
 };
 
@@ -28,6 +29,7 @@ export const InputField = (props: InputFieldProps) => {
                 className={`input-field-general ${props.className}`}
                 defaultValue={props.defaultValue}
                 required={props.required}
+                readOnly={props.readonly}
                 value={props.value}
                 onChange={(e) => props.onChange?.(e.currentTarget.value)}
             />
