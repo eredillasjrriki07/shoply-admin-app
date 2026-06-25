@@ -1,34 +1,50 @@
-import type { PaginatedResponse } from "~/types/types";
+import type { BaseEntity } from "~/lib/common/base.entity";
+import type { PaginatedResponse } from "~/lib/types/types";
+import type { User } from "~/routes/auth/types";
 
-export interface InventoryStats {
-    products: number;
-    totalUnits: number;
-    lowStock: number;
-    outOfStock: number;
-};
-export interface Product {
-    productId: string;
+interface ProductEntityBase {
     name: string;
     imageUrl: string;
     category: string;
     price: number;
     oldPrice: number;
     isActive: boolean;
+}
+export interface InventoryStats {
+    products: number;
+    totalUnits: number;
+    lowStock: number;
+    outOfStock: number;
+};
+export interface ProductsViewItem extends ProductEntityBase {
+    productId: string;
     totalStock: number;
     rating: number;
+}
+
+export interface Product extends BaseEntity, ProductEntityBase {
+    description: string;
+    sizes: ProductSize[];
+    colors: ProductColor[];
+    productVariants: ProductVariant[];
 };
 
-interface ProductSize {
+interface ProductVariantEntityBase extends BaseEntity {
+    productId?: string;
+
+};
+interface ProductSize extends ProductVariantEntityBase {
     value: string;
 };
-interface ProductColor {
+interface ProductColor extends ProductVariantEntityBase {
     value: string;
 };
 
-export interface ProductVariant {
+export interface ProductVariant extends ProductVariantEntityBase {
     sku: string;
     size?: string;
     color?: string;
+    priceOverride?: number | null;
     stocks: number;
 };
 export interface CreateProduct {
@@ -49,7 +65,11 @@ export interface ProductListResponse extends PaginatedResponse {
 }
 
 export interface ProductState {
-    products: Product[];
+    selectedProduct: Product | null;
+};
+
+export interface ProductsViewState {
+    products: ProductsViewItem[];
     count: number;
 };
 
@@ -59,3 +79,33 @@ export interface ProductFilter {
     category?: string;
     status?: string;
 };
+
+export interface Review extends BaseEntity {
+    userId: string;
+    productId: string;
+    orderItemId: string;
+    rating: number;
+    comment: string;
+    user: User;
+}
+
+export interface ReviewList extends PaginatedResponse { 
+    reviews: Review[];
+}
+
+export interface ReviewStats {
+    totalReviews: number;
+    averageRating: number;
+    fiveStar: number;
+    fourStar: number;
+    threeStar: number;
+    twoStar: number;
+    oneStar: number;
+    positivePercent: number;
+    negativePercent: number;
+}
+
+export interface ReviewSummary {
+    summary: ReviewStats;
+    latestReview: Review;
+}

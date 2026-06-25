@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { ProductState } from "./types";
+import type { ProductsViewState } from "../types";
 
-const initialState: ProductState = {
+const initialState: ProductsViewState = {
     products: [],
     count: 0,
 };
 
-const productSlice = createSlice({
-    name: 'products',
+const productsViewSlice = createSlice({
+    name: 'productsView',
     initialState,
     reducers: {
         addProduct(state, action) {
@@ -20,5 +20,5 @@ const productSlice = createSlice({
     }
 });
 
-export const { addProduct, setProducts } = productSlice.actions;
-export default productSlice.reducer;
+export const { addProduct, setProducts } = productsViewSlice.actions;
+export default productsViewSlice.reducer;
