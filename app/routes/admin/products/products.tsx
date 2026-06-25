@@ -5,14 +5,14 @@ import Table from "~/components/ui/table-component";
 import { ProductTableHeaders, type ProductTableItemProps } from "./product.values";
 import { useDispatch } from 'react-redux';
 import { api } from "~/lib/api";
-import { type ApiResponse } from "~/types/types";
-import type { InventoryStats, ProductFilter, ProductListResponse } from "./types";
-import { setProducts } from "./productSlice";
+import { type ApiResponse } from "~/lib/types/types";
+import type { InventoryStats, ProductFilter } from "./types";
 import { useAppSelector } from "~/store";
 import Card from "~/components/ui/card-component";
 import { InputField, SelectField } from "~/components/ui/field-component";
 import { useDebounce } from "use-debounce";
-import { PAGE_LIMIT, productCategories, productStatus } from "~/constants/constants";
+import { PAGE_LIMIT, productCategories, productStatus } from "~/lib/constants/constants";
+import { setProducts } from "./slice/productsViewSlice";
 
 const Products = () => {
     const [inventoryStats, setInventoryStats] = useState<InventoryStats>();
@@ -23,8 +23,8 @@ const Products = () => {
     const [page, setPage] = useState<number>(1);
 
     const navigate = useNavigate();
-    const products = useAppSelector((state) => state.products.products);
-    const productCount = useAppSelector((state) => state.products.count);
+    const products = useAppSelector((state) => state.productsView.products);
+    const productCount = useAppSelector((state) => state.productsView.count);
     const dispatch = useDispatch();
 
     const maxPage = Math.max(1, Math.ceil(productCount / PAGE_LIMIT));
@@ -38,7 +38,7 @@ const Products = () => {
             if (qCategory) queryParams.category = qCategory;
             if (qStatus) queryParams.status = qStatus;
 
-            const { data } = await api.get<ApiResponse<ProductListResponse>>('/products', {
+            const { data } = await api.get('/products', {
                 params: queryParams
             });
 
@@ -123,6 +123,7 @@ const Products = () => {
                     {products.map((product, index) =>
                         <ProductTableItem
                             key={product.productId}
+                            id={product.productId}
                             name={product.name}
                             category={product.category}
                             price={product.price}
@@ -166,7 +167,7 @@ const ProductTableItem = (props: ProductTableItemProps) => {
         <>
             <div className={`flex items-center gap-3 col-span-4 ${props.border} p-3`}>
                 <NavLink
-                    to={'/admin/products/1'}
+                    to={`/admin/products/${props.id}`}
                     className="font-semibold hover:underline hover:text-blue-500"
                 >
                     {props.name}

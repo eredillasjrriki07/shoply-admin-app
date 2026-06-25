@@ -7,7 +7,7 @@ import {
     type ReactNode,
 } from 'react';
 import { api, setUnauthorizedHandler } from './api';
-import type { ApiResponse, AuthContextValue } from '~/types/types';
+import type { ApiResponse, AuthContextValue } from '~/lib/types/types';
 import type { User } from '~/routes/auth/types';
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

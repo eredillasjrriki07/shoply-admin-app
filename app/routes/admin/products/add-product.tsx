@@ -5,15 +5,14 @@ import Card from "~/components/ui/card-component";
 import { InputField, SelectField, TextArea } from "~/components/ui/field-component";
 import { StockCountDefault, StockGridView, StockListView } from "~/components/ui/stock-component";
 import TagInput from "~/components/ui/tag-input";
-import { productCategories } from "~/constants/constants";
-import type { CreateProduct, Product, ProductVariant } from "./types";
-import { generateSku } from "~/components/helpers/helpers";
-import type { ApiResponse } from "~/types/types";
+import { productCategories } from "~/lib/constants/constants";
+import type { CreateProduct, ProductVariant } from "./types";
+import { generateSku } from "~/lib/helpers/helpers";
 import { api } from "~/lib/api";
 import { useDispatch } from "react-redux";
-import { addProduct } from "./productSlice";
 import { AxiosError } from "axios";
-import { errorToast, successToast } from "~/components/util/shoply-toast";
+import { errorToast, successToast } from "~/lib/util/shoply-toast";
+import { addProduct } from "./slice/productsViewSlice";
 
 
 const AddProduct = () => {
@@ -87,7 +86,7 @@ const AddProduct = () => {
 
             newProduct.variants = variants;
 
-            const { data } = await api.post<ApiResponse<Product>>('/products/create', newProduct);
+            const { data } = await api.post('/products/create', newProduct);
 
             dispatch(addProduct(data.data));
 
