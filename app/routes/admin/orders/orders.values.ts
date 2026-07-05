@@ -5,6 +5,7 @@ export interface OrderItemProps {
     date: string;
     itemCount: number;
     total: number;
+    border: string;
 };
 
 export type Tab = {
