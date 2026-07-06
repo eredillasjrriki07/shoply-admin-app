@@ -45,3 +45,8 @@ export enum OrderEventType {
     RETURN_REFUND = 'Return/Refund',
 };
 
+export enum UserRole {
+    ADMIN = "ADMIN",
+    CUSTOMER = "CUSTOMER",
+}
+

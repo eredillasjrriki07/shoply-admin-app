@@ -25,7 +25,7 @@ export interface OrdersViewFilter {
 };
 
 export interface OrderState {
-    selectedOrder: Order | null;
+    selectedOrder: OrderWithRelations | null;
     loading: boolean;
 };
 
@@ -38,6 +38,9 @@ export interface Order extends BaseEntity {
     tax: number;
     promoId?: string | null;
     total: number;
+};
+
+export interface OrderWithRelations extends Order {
     user: CustomerDetails;
     orderItems: OrderItem[];
     orderShippingAddress: OrderShippingAddress;

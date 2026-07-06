@@ -89,11 +89,18 @@ export interface Review extends BaseEntity {
     orderItemId: string;
     rating: number;
     comment: string;
-    user: User;
 }
 
+export interface ReviewWithRelation extends Review {
+    userId: string;
+    productId: string;
+    orderItemId: string;
+    rating: number;
+    comment: string;
+    user: User;
+};
 export interface ReviewList extends PaginatedResponse {
-    reviews: Review[];
+    reviews: ReviewWithRelation[];
 }
 
 export interface ReviewStats {
@@ -110,5 +117,5 @@ export interface ReviewStats {
 
 export interface ReviewSummary {
     summary: ReviewStats;
-    latestReview: Review;
+    latestReview: ReviewWithRelation;
 }
