@@ -11,14 +11,14 @@ import { useAppSelector } from "~/store";
 import Card from "~/components/ui/card-component";
 import { InputField, SelectField } from "~/components/ui/field-component";
 import { useDebounce } from "use-debounce";
-import { PAGE_LIMIT, productCategories, productStatus } from "~/lib/constants/constants";
+import { DEBOUNCE_TIME, productCategories, productStatus } from "~/lib/constants/constants";
 import { setProducts } from "./slice/productsViewSlice";
 import { PageComponent } from "~/components/ui/page-component";
 
 const Products = () => {
     const [inventoryStats, setInventoryStats] = useState<InventoryStats>();
     const [qName, setqName] = useState<string>("");
-    const [debouncedqName] = useDebounce(qName, 400);
+    const [debouncedqName] = useDebounce(qName, DEBOUNCE_TIME);
     const [qCategory, setqCategory] = useState<string>("");
     const [qStatus, setqStatus] = useState<string>("");
     const [page, setPage] = useState<number>(1);
@@ -27,8 +27,6 @@ const Products = () => {
     const products = useAppSelector((state) => state.productsView.products);
     const productCount = useAppSelector((state) => state.productsView.count);
     const dispatch = useDispatch();
-
-    const maxPage = Math.max(1, Math.ceil(productCount / PAGE_LIMIT));
 
     useEffect(() => {
         async function getProducts() {
