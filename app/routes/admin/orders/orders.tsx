@@ -6,12 +6,12 @@ import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { api } from "~/lib/api";
 import { setOrders } from "./slice/orderViewSlice";
-import { formatDate } from "~/lib/helpers/helpers";
 import { InputField } from "~/components/ui/field-component";
 import Button from "~/components/ui/button-component";
 import type { OrdersViewFilter } from "./types";
 import { UTC_DAY_END_SUFFIX, UTC_DAY_START_SUFFIX } from "~/lib/constants/constants";
 import { PageComponent } from "~/components/ui/page-component";
+import { formatDate } from "~/lib/helpers/date-helper";
 
 const Orders = () => {
     const [activeTab, setActiveTab] = useState("All");
@@ -30,8 +30,6 @@ const Orders = () => {
             // Construct filter
             if (qFrom) queryParams.fromDate = qFrom + UTC_DAY_START_SUFFIX;
             if (qTo) queryParams.toDate = qTo + UTC_DAY_END_SUFFIX;
-
-            console.log(queryParams);
 
             const { data } = await api.get('/orders', {
                 params: queryParams
@@ -101,7 +99,9 @@ const Orders = () => {
                         <OrderItem
                             key={filteredOrder.id}
                             orderId={filteredOrder.id}
+                            orderNumber={filteredOrder.orderNumber}
                             customer={filteredOrder.customerName}
+                            customerEmail={filteredOrder.customerEmail}
                             status={filteredOrder.status}
                             date={formatDate(filteredOrder.date)}
                             itemCount={filteredOrder.items}
@@ -120,12 +120,15 @@ const OrderItem = (props: OrderItemProps) => {
     return (
         <div className={`col-span-12 grid grid-cols-12 p-3 ${props.border}`}>
             <NavLink
-                to={'/admin/orders/1'}
+                to={`/admin/orders/${props.orderNumber}`}
                 className="col-span-2 font-semibold hover:underline hover:text-blue-500"
             >
-                {props.orderId}
+                {props.orderNumber}
             </NavLink>
-            <span className="col-span-3">{props.customer}</span>
+            <div className="col-span-3 flex flex-col">
+                <span>{props.customer}</span>
+                <span className="text-sm text-gray-500">{props.customerEmail}</span>
+            </div>
             <span className="col-span-2"> {props.status}</span>
             <span className="col-span-2">{props.date}</span>
             <span className="col-span-2">{props.itemCount}</span>

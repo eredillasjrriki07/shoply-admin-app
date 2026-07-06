@@ -1,6 +1,8 @@
 export interface OrderItemProps {
     orderId: string;
+    orderNumber: string;
     customer: string;
+    customerEmail: string;
     status: string;
     date: string;
     itemCount: number;

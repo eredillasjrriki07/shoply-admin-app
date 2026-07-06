@@ -11,9 +11,10 @@ import { useAppSelector } from "~/store";
 import type { ReviewSummary, ReviewList } from "./types";
 import { AxiosError } from "axios";
 import { errorToast, successToast } from "~/lib/util/shoply-toast";
-import { formatDate, getSalePercentage, getStars } from "~/lib/helpers/helpers";
-import { PAGE_LIMIT, productCategories } from "~/lib/constants/constants";
+import { getSalePercentage, getStars } from "~/lib/helpers/helpers";
+import { productCategories } from "~/lib/constants/constants";
 import { PageComponent } from "~/components/ui/page-component";
+import { formatDate } from "~/lib/helpers/date-helper";
 
 const ProductDetails = () => {
     const [isViewing, setIsViewing] = useState(false);
@@ -27,8 +28,6 @@ const ProductDetails = () => {
     const { id } = useParams();
 
     const reviewCount = reviewList?.count!;
-
-    const maxPage = Math.max(1, Math.ceil(reviewCount / PAGE_LIMIT));
 
     useEffect(() => {
         async function getProductDetailsAndReviews() {
