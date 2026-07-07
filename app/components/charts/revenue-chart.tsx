@@ -9,25 +9,15 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Card from "../ui/card-component";
+import type { RevenueChartProps } from "~/routes/admin/dashboard/dashboard.values";
 
-type DataPoint = { date: string; revenue: number };
 
-const data: DataPoint[] = [
-  { date: "May 13", revenue: 215 },
-  { date: "May 14", revenue: 140 },
-  { date: "May 15", revenue: 0 },
-  { date: "May 16", revenue: 235 },
-  { date: "May 17", revenue: 285 },
-  { date: "May 18", revenue: 170 },
-  { date: "May 19", revenue: 0 },
-];
-
-const RevenueChart = () => {
+const RevenueChart = ({ revenue, range, data }: RevenueChartProps) => {
   return (
     <Card className="col-span-4 w-full">
       <Card.Header className="flex justify-between items-center">
-        <span className="font-semibold">Revenue — last 7 days</span>
-        <span className="text-gray-500 font-semibold">₱1070.59 <span className="text-green-700 text-xs">▲ 94.5%</span></span>
+        <span className="font-semibold">Revenue — last {range} days</span>
+        <span className="text-gray-500 font-semibold">₱{revenue}</span>
       </Card.Header>
       <Card.Body className="h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">

@@ -1,24 +1,51 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import Card from "../ui/card-component";
+import type { OrderByStatusChartProps } from "~/routes/admin/dashboard/dashboard.values";
+import { useEffect, useState } from "react";
 
 type Slice = { name: string; value: number; color: string };
+type StatusCount = { status: string; count: number; color: string };
 
-const data: Slice[] = [
-    { name: "Pending", value: 5, color: "#3b82f6" }, // blue
-    { name: "Shipped", value: 2, color: "#f59e0b" }, // amber
-    { name: "Delivered", value: 3, color: "#10b981" }, // green
+let initialData: Slice[] = [
+    { name: "Placed", value: 0, color: "#38bdf8" },
+    { name: "To Ship", value: 0, color: "#d97706" },
+    { name: "Cancelled", value: 0, color: "#f59e0b" },
+    { name: "To Receive", value: 0, color: "#2563eb" },
+    { name: "Return/Refund", value: 0, color: "#dc2626" },
+    { name: "Completed", value: 0, color: "#16a34a" },
 ];
 
-const StatusCount = [
-    { status: 'To Ship', count: 2, color: 'bg-amber-600' },
+const initiaStatusCount = [
+    { status: 'Placed', count: 0, color: 'bg-sky-400' },
+    { status: 'To Ship', count: 0, color: 'bg-amber-600' },
     { status: 'Cancelled', count: 0, color: 'bg-gray-400' },
-    { status: 'To Receive', count: 6, color: 'bg-blue-600' },
+    { status: 'To Receive', count: 0, color: 'bg-blue-600' },
     { status: 'Return/Refund', count: 0, color: 'bg-red-600' },
-    { status: 'Completed', count: 2, color: 'bg-green-600' },
+    { status: 'Completed', count: 0, color: 'bg-green-600' },
 ];
 
-const OrderByStatusChart = () => {
-    const total = data.reduce((sum, d) => sum + d.value, 0);
+const OrderByStatusChart = ({ statusCounts }: OrderByStatusChartProps) => {
+    const [data, setData] = useState<Slice[]>();
+    const [total, setTotal] = useState<number>(0);
+    const [statusCount, setStatusCount] = useState<StatusCount[]>();
+
+    useEffect(() => {
+        if (!statusCounts) return;
+
+        const updatedData = initialData.map((slice) => {
+            const status = statusCounts.find((item) => item.status === slice.name);
+            return { ...slice, value: status?.count ?? 0, };
+        });
+
+        const updatedStatusCount = initiaStatusCount.map(item => {
+            const status = statusCounts.find(s => s.status === item.status);
+            return { ...item, count: status?.count ?? 0 };
+        });
+
+        setData(updatedData);
+        setTotal(updatedData.reduce((sum, d) => sum + d.value, 0));
+        setStatusCount(updatedStatusCount);
+    }, [statusCounts]);
 
     return (
         <Card className="col-span-2 w-full">
@@ -41,7 +68,7 @@ const OrderByStatusChart = () => {
                             endAngle={-270}
                             stroke="none"
                         >
-                            {data.map((slice) => (
+                            {data?.map((slice) => (
                                 <Cell key={slice.name} fill={slice.color} />
                             ))}
                         </Pie>
@@ -62,7 +89,7 @@ const OrderByStatusChart = () => {
                 </div>
             </Card.Body>
             <div className="grid grid-cols-2 px-5 pb-5 gap-x-4">
-                {StatusCount.map(status =>
+                {statusCount?.map(status =>
                     <div className="flex" key={status.status}>
                         <div className="flex items-center flex-1 gap-2">
                             <div className={`w-3 h-3 ${status.color}`}></div>
