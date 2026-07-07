@@ -105,6 +105,7 @@ const CustomerDetails = () => {
                     <Table.Body className="grid-cols-6">
                         {customer?.orders.map((order, index, list) =>
                             <CustomerOrdersTableItem
+                                key={order.id}
                                 orderNumber={order.orderNumber}
                                 status={order.status}
                                 date={formatDate(order.createdAt!)}
