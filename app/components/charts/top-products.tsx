@@ -9,18 +9,10 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import Card from "../ui/card-component";
+import type { TopProductsChartProps } from "~/routes/admin/dashboard/dashboard.values";
 
-type Product = { name: string; sold: number };
 
-const data: Product[] = [
-    { name: "Classic Tee", sold: 8 },
-    { name: "Ceramic Mug", sold: 4 },
-    { name: "Water Bottle", sold: 4 },
-    { name: "Scented Candle", sold: 3 },
-    { name: "Denim Jacket", sold: 2 },
-];
-
-const TopProductsChart = () => {
+const TopProductsChart = ({ data }: TopProductsChartProps) => {
     return (
         <Card className="w-full">
             <Card.Header>

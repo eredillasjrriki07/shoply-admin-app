@@ -90,7 +90,7 @@ const Customers = () => {
 
 const CustomerEntry = (props: CustomerEntryProps) => {
     return (
-        <div className="col-span-12 grid grid-cols-12 p-3 border-b border-gray-200">
+        <div className={`col-span-12 grid grid-cols-12 p-3 ${props.border}`}>
             <NavLink
                 to={`/admin/customers/${props.id}`}
                 className="col-span-4 font-semibold hover:underline hover:text-blue-500"
